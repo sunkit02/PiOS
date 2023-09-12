@@ -214,29 +214,32 @@ void kernel_main(uint32_t r0, uint32_t r1, uint32_t atags)
   uart_puts("\r\n");
   uart_puts("\r\n");
 
-  for (char i = 48; i < 58; ++i) {
-    uart_puts("PiOS: ");
-    uart_puts(&i);
-    uart_puts("\r\n");
+  // for (char i = 48; i < 58; ++i) {
+  //   uart_puts("PiOS: ");
+  //   uart_puts(&i);
+  //   uart_puts("\r\n");
+  //
+  //   // delay(1200000000);
+  // }
+  //
+  // uart_puts("\r\n");
+  // uart_puts("\r\n");
 
-    // delay(1200000000);
-  }
+  // for (char i = 0; i < 100; ++i) {
+  //   uart_printc_num_val(i);
+  // }
 
-  uart_puts("\r\n");
-  uart_puts("\r\n");
-
-  for (char i = 0; i < 100; ++i) {
-    uart_printc_num_val(i);
-  }
-
-  char buffer[10] = { 0 };
+  char buffer[100];
  
 	while (1) {
     uart_puts("Type something: ");
-    uart_readline(buffer, 10);
+    uart_readline(buffer, 100);
 
     uart_puts("You entered: ");
     uart_puts(buffer);
     uart_puts("\r\n");
+    uart_puts("\r\n");
+
+    // uart_printc_num_val(uart_getc());
   }
 }
