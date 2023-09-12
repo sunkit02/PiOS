@@ -24,5 +24,5 @@ For more details please read
 - screen (serial port communication with hardware)
 
 #### Note:
-Do not run `replace_img.sh` and `restore_img.sh` if you don't know exactly the
-script does!
+Do not run `replace_img.sh` and `restore_img.sh` if you don't know what exactly 
+the scripts do!
