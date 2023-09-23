@@ -1,5 +1,16 @@
 #include <stddef.h>
 #include <stdint.h>
+
+// 
+int get_cpsr();
+
+asm(".global get_cpsr\n"
+    "get_cpsr:\n"
+    "  mov r1, #2\n" // trigger a set for N bit on purpose
+    "  subs r1, #10\n" // 2 - 10 = negative
+    "  mrs r0, cpsr\n"
+    "  bx lr\n"
+);
  
 static uint32_t MMIO_BASE;
  
@@ -195,6 +206,25 @@ unsigned int uart_readline(char *buffer, unsigned int buffer_size) {
 
   return i;
 }
+
+void uart_printIntBinary(int num) {
+  unsigned int mask = 1 << 31;
+
+  for (int i = 0; i < 32; i++) {
+    if (num & mask) {
+      uart_putc('1');
+    } else {
+      uart_putc('0');
+    }
+
+    mask >>= 1;
+
+    if (i % 4 == 3) {
+      uart_putc(' ');
+    }
+  }
+  uart_puts("\r\n");
+}
  
 #if defined(__cplusplus)
 extern "C" /* Use C linkage for kernel_main. */
@@ -228,6 +258,8 @@ void kernel_main(uint32_t r0, uint32_t r1, uint32_t atags)
   // for (char i = 0; i < 100; ++i) {
   //   uart_printc_num_val(i);
   // }
+  
+  uart_printIntBinary(get_cpsr());
 
   char buffer[100];
  
@@ -239,7 +271,5 @@ void kernel_main(uint32_t r0, uint32_t r1, uint32_t atags)
     uart_puts(buffer);
     uart_puts("\r\n");
     uart_puts("\r\n");
-
-    // uart_printc_num_val(uart_getc());
   }
 }
