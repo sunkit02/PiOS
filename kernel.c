@@ -1,17 +1,10 @@
 #include <stddef.h>
 #include <stdint.h>
 
-// 
-int get_cpsr();
+extern int get_cpsr();
+extern int save_cpsr();
+extern int get_spsr();
 
-asm(".global get_cpsr\n"
-    "get_cpsr:\n"
-    "  mov r1, #2\n" // trigger a set for N bit on purpose
-    "  subs r1, #10\n" // 2 - 10 = negative
-    "  mrs r0, cpsr\n"
-    "  bx lr\n"
-);
- 
 static uint32_t MMIO_BASE;
  
 // The MMIO area base address, depends on board type
@@ -259,7 +252,19 @@ void kernel_main(uint32_t r0, uint32_t r1, uint32_t atags)
   //   uart_printc_num_val(i);
   // }
   
+  uart_puts("CPSR: ");
   uart_printIntBinary(get_cpsr());
+  uart_putc('\n');
+
+  uart_puts("SPSR: ");
+  uart_printIntBinary(save_cpsr());
+  uart_putc('\n');
+
+  uart_puts("SPSR AFTER SAVE: ");
+  uart_printIntBinary(get_spsr());
+  uart_putc('\n');
+
+
 
   char buffer[100];
  
