@@ -1,8 +1,10 @@
 export ARMGNU = arm-none-eabi
 
-export C_FLAGS = -mcpu=arm1176jzf-s -fpic -ffreestanding -std=gnu99 -O2 -Wall -Wextra
-export ASM_FLAGS = -mcpu=arm1176jzf-s -fpic -ffreestanding
-export LINK_FLAGS = -mcpu=arm1176jzf-s -ffreestanding -O2 -nostdlib -lgcc
+INCLUDE_DIR = $(shell pwd)/include
+
+export C_FLAGS = -mcpu=arm1176jzf-s -fpic -ffreestanding -I$(INCLUDE_DIR) -std=gnu99 -O2 -Wall -Wextra
+export ASM_FLAGS = -mcpu=arm1176jzf-s -fpic -ffreestanding -I$(INCLUDE_DIR)
+export LINK_FLAGS = -mcpu=arm1176jzf-s -ffreestanding -O2 -nostdlib -lgcc -I$(INCLUDE_DIR)
 
 EMULATOR_FLAGS = -M raspi1ap -serial stdio -kernel
 
