@@ -1,6 +1,4 @@
 CC = arm-none-eabi-gcc
-BOOT_FLAGS = -mcpu=arm1176jzf-s -fpic -ffreestanding
-KERNEL_FLAGS = -mcpu=arm1176jzf-s -fpic -ffreestanding -std=gnu99 -O2 -Wall -Wextra
 
 C_FLAGS = -mcpu=arm1176jzf-s -fpic -ffreestanding -std=gnu99 -O2 -Wall -Wextra
 ASM_FLAGS = -mcpu=arm1176jzf-s -fpic -ffreestanding
