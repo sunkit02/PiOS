@@ -1,9 +1,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
-extern int get_cpsr();
-extern int save_cpsr();
-extern int get_spsr();
+#include "mm/psr.h"
+
 
 static uint32_t MMIO_BASE;
  
