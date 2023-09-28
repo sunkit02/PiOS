@@ -1,7 +1,11 @@
 #include <stdint.h>
 #include <stddef.h>
+#include "lib/print.h"
 #include "peripherals/bcm2835-gpio.h"
 #include "peripherals/mmio.h"
+
+#define DEL_CHAR 127
+#define BACKSPACE_SEQUENCE "\b \b"
 
 // A Mailbox message with set clock rate of PL011 to 3MHz tag
 volatile unsigned int  __attribute__((aligned(16))) mbox[9] = {
@@ -79,17 +83,34 @@ void uart_puts(const char* str) {
 		uart_putc((unsigned char)str[i]);
 }
 
+// Read input from uart
 unsigned int uart_readline(char *buffer, unsigned int buffer_size) {
-
   unsigned int i = 0;
-
+  unsigned char c = 0;
   while (1) {
-    unsigned char c = uart_getc();
+    c = uart_getc();
+
+    // handle backspace / delete control character
+    if (c == DEL_CHAR) {
+      // Print sequence to overwrite previously printed character and
+      // decrement i to overwrite previously written characters only 
+      // when i is greater than 0 to avoid negative indexing and overwriting
+      // characters printed before uart_readline() was invoked
+      if (i > 0) {
+        uart_puts(BACKSPACE_SEQUENCE);
+        i--;
+      }
+      continue;
+    }
+    
+    // Stop reading when read CR character
+    // Note: Enter key code is CR in ascii (at least in QEMU)
+    if (c == '\r') break;
+
     // Echo entered character
     uart_putc(c);
 
-    if (c == '\r') break;
-
+    // Only read up to buffer size (leave space for '\0')
     if (i < buffer_size - 1) {
       buffer[i++] = c;
     }
