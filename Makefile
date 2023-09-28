@@ -1,16 +1,21 @@
-export ARMGNU = arm-none-eabi
+# Used to determine the SoC board drivers 
+export RPI_VERSION ?= 1
 
-INCLUDE_DIR = $(shell pwd)/include
+export ARMGNU = arm-none-eabi
 
 export C_FLAGS = -mcpu=arm1176jzf-s -fpic -ffreestanding -I$(INCLUDE_DIR) -std=gnu99 -O2 -Wall -Wextra
 export ASM_FLAGS = -mcpu=arm1176jzf-s -fpic -ffreestanding -I$(INCLUDE_DIR)
 export LINK_FLAGS = -mcpu=arm1176jzf-s -ffreestanding -O2 -nostdlib -lgcc -I$(INCLUDE_DIR)
 
-EMULATOR_FLAGS = -M raspi1ap -serial stdio -kernel
+INCLUDE_DIR = $(shell pwd)/include
 
 BUILD_DIR = build
-
+# Prepend absolute path for sub-makes to use
 export BUILD_DIR := $(shell pwd)/$(BUILD_DIR)
+
+# Flags for QEMU to run
+EMULATOR_FLAGS = -M raspi1ap -serial stdio -kernel
+
 
 .PHONY: all
 all: build
@@ -27,8 +32,10 @@ run: build
 
 
 .PHONY: build
-build: build_sub_dirs $(BUILD_DIR)/kernel.img
+build: create_build_dir build_sub_dirs $(BUILD_DIR)/kernel.img
 
+create_build_dir:
+	mkdir -p $(BUILD_DIR)
 
 build_sub_dirs:
 	make -e -C lib

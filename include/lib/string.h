@@ -2,8 +2,8 @@
 ////   String Functions necesary for Lib C   ////
 /////////////////////////////////////////////////
 
-#ifndef STRING_H
-#define STRING_H
+#ifndef LIB_STRING_H
+#define LIB_STRING_H
 
 typedef unsigned int size_t;
 
@@ -15,4 +15,4 @@ void *memcat(void *dest, const void *src1, const void *src2, size_t src1N, size_
 void *memset(void *str, int c, size_t n);
 int strcmp(const char *str1, const char *str2);
 
-#endif
+#endif // !LIB_STRING_H
