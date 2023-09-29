@@ -4,6 +4,7 @@
 #include "mm/psr.h"
 #include "peripherals/uart.h"
 #include "lib/print.h"
+#include "lib/string.h"
  
 #ifdef AARCH64
 // arguments for AArch64
@@ -49,8 +50,11 @@ void kernel_main(uint32_t r0, uint32_t r1, uint32_t atags)
     uart_puts("You entered: ");
     uart_puts(buffer);
     uart_puts("\r\n");
-    uart_puts("A total of x");
-    uart_puts(" characters.");
+    uart_puts("A total of ");
+    size_t len = strlen(buffer);
+    int_str(len, buffer);
+    strcat(buffer, " characters.");
+    uart_puts(buffer);
 
     uart_puts("\r\n");
     uart_puts("\r\n");
