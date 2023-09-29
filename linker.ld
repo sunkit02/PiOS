@@ -1,3 +1,8 @@
+/* 
+   The following code is from wiki.osdev.org 
+   Link: https://wiki.osdev.org/Raspberry_Pi_Bare_Bones#Testing_your_operating_system_.28Real_Hardware.29
+*/
+
 ENTRY(_start)
  
 SECTIONS

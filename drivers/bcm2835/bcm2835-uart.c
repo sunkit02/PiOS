@@ -1,3 +1,4 @@
+
 #include <stdint.h>
 #include <stddef.h>
 #include "lib/print.h"
@@ -6,6 +7,11 @@
 
 #define DEL_CHAR 127
 #define BACKSPACE_SEQUENCE "\b \b"
+
+/* 
+   The following code is from wiki.osdev.org 
+   Link: https://wiki.osdev.org/Raspberry_Pi_Bare_Bones#Testing_your_operating_system_.28Real_Hardware.29
+*/
 
 // A Mailbox message with set clock rate of PL011 to 3MHz tag
 volatile unsigned int  __attribute__((aligned(16))) mbox[9] = {
@@ -82,6 +88,12 @@ void uart_puts(const char* str) {
 	for (size_t i = 0; str[i] != '\0'; i ++)
 		uart_putc((unsigned char)str[i]);
 }
+
+/* 
+   The above code is from wiki.osdev.org 
+   Link: https://wiki.osdev.org/Raspberry_Pi_Bare_Bones#Testing_your_operating_system_.28Real_Hardware.29
+*/
+
 
 // Read input from uart
 unsigned int uart_readline(char *buffer, unsigned int buffer_size) {

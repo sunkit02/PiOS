@@ -1,10 +1,7 @@
-# 0 "boot.S"
-# 0 "<built-in>"
-# 0 "<command-line>"
-# 1 "/usr/include/stdc-predef.h" 1 3 4
-# 0 "<command-line>" 2
-# 1 "boot.S"
-
+/* 
+   The following code is from wiki.osdev.org 
+   Link: https://wiki.osdev.org/Raspberry_Pi_Bare_Bones#Testing_your_operating_system_.28Real_Hardware.29
+*/
 
 
 .section ".text.boot"
