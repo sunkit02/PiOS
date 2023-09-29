@@ -2,3 +2,7 @@ build/
 
 # Clangd configuration
 .clangd
+/.vs/PiOS/FileContentIndex
+/.vs/PiOS/v17
+*.sqlite
+*.json
