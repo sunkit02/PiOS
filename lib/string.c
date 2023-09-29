@@ -24,7 +24,7 @@ char* strcat(char* destination, const char* source){
     destination++;
     source++;
   }
-  *destination = '0';
+  *destination = '\0';
   return originalDestination;
 }
 

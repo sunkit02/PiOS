@@ -5,8 +5,7 @@
 #ifndef LIB_STRING_H
 #define LIB_STRING_H
 
-typedef unsigned int size_t;
-
+#include <stddef.h>
 
 size_t strlen(char *str);
 char* strcat(char* destination, const char* source);
