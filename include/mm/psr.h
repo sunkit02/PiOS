@@ -1,7 +1,8 @@
-#ifndef __PSR_H__
+#ifndef MM_PSR_H
+#define MM_PSR_H
 
 int get_cpsr();
 int save_cpsr();
 int get_spsr();
 
-#endif // !__PSR_H__
+#endif // !MM_PSR_H
