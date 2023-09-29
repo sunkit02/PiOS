@@ -57,17 +57,17 @@ char *int_str(int num, char *buf) {
     buf[i++] = '-';
   } 
 
-  int curr_digit = 0;
+  int currDigit = 0;
   int base = 1000000000;
   // Set flag to true initially to omit leading zeroes
   // Set flag to false once the first non-zero digit is reached
   bool isLeadingZero = true;
   while (base > 0) {
-    curr_digit = num / base;
+    currDigit = num / base;
     // Append digit to string if non-zero value or is not a leading zero
-    if (curr_digit > 0 || !isLeadingZero) {
+    if (currDigit > 0 || !isLeadingZero) {
       isLeadingZero = false;
-      buf[i++] = ASCII_NUM_BASE + curr_digit;
+      buf[i++] = ASCII_NUM_BASE + currDigit;
     }
     num %= base;
     base /= 10;
