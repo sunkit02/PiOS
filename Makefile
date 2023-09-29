@@ -5,7 +5,7 @@ export ARMGNU = arm-none-eabi
 
 export C_FLAGS = -mcpu=arm1176jzf-s -fpic -ffreestanding -I$(INCLUDE_DIR) -std=gnu99 -O2 -Wall -Wextra
 export ASM_FLAGS = -mcpu=arm1176jzf-s -fpic -ffreestanding -I$(INCLUDE_DIR)
-export LINK_FLAGS = -mcpu=arm1176jzf-s -ffreestanding -O2 -nostdlib -lgcc -I$(INCLUDE_DIR)
+export LINK_FLAGS = -mcpu=arm1176jzf-s -ffreestanding -O2 -nostdlib -I$(INCLUDE_DIR)
 
 INCLUDE_DIR = $(shell pwd)/include
 
@@ -50,7 +50,7 @@ $(BUILD_DIR)/kernel.img: $(BUILD_DIR)/kernel.elf
 	$(ARMGNU)-objcopy $< -O binary $@
 
 $(BUILD_DIR)/kernel.elf: linker.ld
-	$(ARMGNU)-gcc -T $< -o $@ $(LINK_FLAGS) $(BUILD_DIR)/*.o
+	$(ARMGNU)-gcc -T $< -o $@ $(LINK_FLAGS) $(BUILD_DIR)/*.o -lgcc 
 
 .PHONY: clean
 clean:
