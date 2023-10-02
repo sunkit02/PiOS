@@ -104,3 +104,37 @@ char *int_bstr(int num, char *buf) {
 
   return buf + j;
 }
+
+
+// Only can do one variable at a time
+// Can be string or int
+void printf(char *string, void variable){ 
+    size_t counter = 0;
+   // Save temp answer
+   char *currentString;
+
+   // Loop till end of string
+   while (*string != '%'){
+        counter++;
+        //check for escape charecter
+        if (*string == '%'){
+        string++;
+        }
+
+        if (*string == 'd') {
+        // Convert decimal to string
+            char *stringVarible = int_bstr(variable);
+
+            //cat first half of string with string deimcal
+            strcat(currentString, stringVarible);
+            //cat the second half of the finalized string
+            strcat(currentString, string);
+
+            } else if (*string == 's') {
+                //cat first half of string with string
+                strcat(currentString, stringVarible);
+                //cat the second half of the finalized string
+                strcat(currentString, string);
+            }
+    }
+}
