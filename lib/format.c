@@ -21,11 +21,15 @@
 // 1 - Big endian
 #define ENDIANNESS 0
 
+// Number of chars needed represent the maximum value of a signed integer 
+// as a string (including '\0')
+#define CHARS_FOR_INT 40
+
 static const char HEX_CHARS[16] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
 // Prints numeric value of a character
 // Returns pointer to null terminating character of string
-char *ascii_str(unsigned char c, char *buf) {
+char *ascii_str(unsigned char c, char *buf, size_t bufSize) {
   int i = 0;
   unsigned char tmp = 0;
 
@@ -50,7 +54,14 @@ char *ascii_str(unsigned char c, char *buf) {
 // Converts a signed integer to its string representation
 // Returns pointer to null terminating character of string
 // Note: buf must of of size 12 or greater
-char *int_str(int num, char *buf) {
+// Returns null pointer if an error occurred
+char *int_str(int num, char *buf, size_t bufSize) {
+
+  // Return NULL if buffer is too small
+  if (bufSize < CHARS_FOR_INT) {
+    return NULL;
+  }
+
   // Handle zero
   if (num == 0) {
     buf[0] = '0';
@@ -59,8 +70,9 @@ char *int_str(int num, char *buf) {
     return buf + 1;
   }
 
-  unsigned int mask = 1 << 31; 
   int i = 0;
+
+  unsigned int mask = 1 << 31; 
 
   // Check two's complement first bit and converts negative to unsigned
   if (num & mask) {
@@ -68,7 +80,7 @@ char *int_str(int num, char *buf) {
     num += 1;
     // Insert negative sign
     buf[i++] = '-';
-  } 
+  }
 
   int currDigit = 0;
   int base = 1000000000;
@@ -94,33 +106,9 @@ char *int_str(int num, char *buf) {
 // Converts an integer (signed or unsigned) to its binary representaton as 
 // a string.
 // Returns pointer to null terminating character of string
-// Note: buf must of of size 37 or greater
-char *int_bstr(int num, char *buf) {
-  unsigned int mask = 1 << 31;
-
-  int j = 0;
-  for (int i = 0; i < 32; i++) {
-    if (num & mask) {
-      buf[j++] = '1';
-    } else {
-      buf[j++] = '0';
-    }
-
-    mask >>= 1;
-
-    if (i % 4 == 3) {
-      buf[j++] = ' ';
-    }
-  }
-
-  // Overwrite trailing space with '\0'
-  if (buf[j - 1] == ' ') {
-    j--;
-  }
-
-  buf[j] = '\0';
-
-  return buf + j;
+// Note: buf must of of size 40 or greater
+char *int_bstr(int num, char *buf, size_t bufSize) {
+  return to_bstr_end((void *)&num, sizeof(int), buf, bufSize);
 }
 
 // Generic binary dump

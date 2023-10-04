@@ -6,18 +6,18 @@
 
 // Prints numeric value of a character
 // Returns pointer to null terminating character of string
-char *ascii_str(unsigned char c, char *buf); 
+char *ascii_str(unsigned char c, char *buf, size_t bufSize); 
 
 // Converts a signed integer to its string representation
 // Returns pointer to null terminating character of string
 // Note: buf must of of size 12 or greater
-char *int_str(int num, char *buf);
+char *int_str(int num, char *buf, size_t bufSize);
 
 // Converts an integer (signed or unsigned) to its binary representaton as 
 // a string.
 // Returns pointer to null terminating character of string
 // Note: buf must of of size 37 or greater
-char *int_bstr(int num, char *buf); 
+char *int_bstr(int num, char *buf, size_t bufSize); 
 
 
 char *to_bstr(void *ptr, size_t size, char *buf, size_t bufSize);

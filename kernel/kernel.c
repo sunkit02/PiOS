@@ -24,19 +24,19 @@ void kernel_main(uint32_t r0, uint32_t r1, uint32_t atags)
   char *strEnd = NULL;
   
   uart_puts("CPSR: ");
-  strEnd = int_bstr(get_cpsr(), buf) + 1;
+  strEnd = int_bstr(get_cpsr(), buf, sizeof(buf)) + 1;
   uart_puts(buf);
   uart_puts("\n");
 
   uart_puts("SPSR: ");
-  strEnd = int_bstr(get_spsr(), buf) + 1;
+  strEnd = int_bstr(get_spsr(), buf, sizeof(buf)) + 1;
   uart_puts(buf);
   uart_puts("\n");
 
   save_cpsr();
 
   uart_puts("SPSR AFTER SAVE: ");
-  strEnd = int_bstr(get_spsr(), buf) + 1;
+  strEnd = int_bstr(get_spsr(), buf, sizeof(buf)) + 1;
   uart_puts(buf);
   uart_puts("\n");
 
@@ -52,13 +52,13 @@ void kernel_main(uint32_t r0, uint32_t r1, uint32_t atags)
   // to_xstr(&num, sizeof(num), sizeof(num), buf, 1024);
   for (int i = 0; i < 3; i++) {
     // to_xstr(&msg[i], sizeof(msg[i]), buf, sizeof(buf));
-    to_bstr(&msg[i], sizeof(msg[i]), buf, sizeof(buf));
+    int_bstr(msg[i], buf, sizeof(buf));
     uart_puts(buf);
     uart_puts("\n");
   }
 
   uart_puts("sizeof(msg)=");
-  int_str(sizeof(msg), buf);
+  int_str(sizeof(msg), buf, sizeof(buf));
   uart_puts(buf);
   uart_puts("\n");
 
@@ -68,7 +68,7 @@ void kernel_main(uint32_t r0, uint32_t r1, uint32_t atags)
   uart_puts(buf);
   uart_puts("\r\n");
 
-  int_str(sizeof(num), buf);
+  int_str(sizeof(num), buf, sizeof(buf));
   uart_puts(buf);
   uart_puts("\r\n");
 
@@ -83,7 +83,7 @@ void kernel_main(uint32_t r0, uint32_t r1, uint32_t atags)
     uart_puts("\n");
     uart_puts("A total of ");
     size_t len = strlen(buffer);
-    int_str(len, buffer);
+    int_str(len, buffer, sizeof(buffer));
     strcat(buffer, " characters.");
     uart_puts(buffer);
 
