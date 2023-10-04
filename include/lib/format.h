@@ -2,6 +2,7 @@
 #define LIB_PRINT_H
 
 #include "peripherals/uart.h"
+#include <stddef.h>
 
 // Prints numeric value of a character
 // Returns pointer to null terminating character of string
@@ -18,5 +19,9 @@ char *int_str(int num, char *buf);
 // Note: buf must of of size 37 or greater
 char *int_bstr(int num, char *buf); 
 
+
+char *to_bstr(void *ptr, size_t n, char *buf, size_t bufSize);
+
+char *to_xstr(void *ptr, size_t size, size_t n, char *buf, size_t bufSize);
 
 #endif // !LIB_PRINT_H

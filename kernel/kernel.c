@@ -3,7 +3,7 @@
 
 #include "mm/psr.h"
 #include "peripherals/uart.h"
-#include "lib/print.h"
+#include "lib/format.h"
 #include "lib/string.h"
  
 #ifdef AARCH64
@@ -20,26 +20,50 @@ void kernel_main(uint32_t r0, uint32_t r1, uint32_t atags)
   uart_puts("\r\n");
   uart_puts("\r\n");
 
-  char buf[40] = { 0 };
+  char buf[1024];
   char *strEnd = NULL;
   
   uart_puts("CPSR: ");
   strEnd = int_bstr(get_cpsr(), buf) + 1;
   uart_puts(buf);
-  uart_puts("\r\n");
+  uart_puts("\n");
 
   uart_puts("SPSR: ");
   strEnd = int_bstr(get_spsr(), buf) + 1;
   uart_puts(buf);
-  uart_puts("\r\n");
+  uart_puts("\n");
 
   save_cpsr();
 
   uart_puts("SPSR AFTER SAVE: ");
   strEnd = int_bstr(get_spsr(), buf) + 1;
   uart_puts(buf);
+  uart_puts("\n");
+
+
+  uart_puts("\n");
+  uart_puts("\n");
+
+  int num = 0x11223345;
+
+  char msg[] = {"Hello, world!"};
+  uart_puts("HEX: ");
+  // to_xstr(&num, sizeof(num), sizeof(num), buf, 1024);
+  to_xstr(msg, sizeof(msg[0]), sizeof(msg), buf, 1024);
+  uart_puts(buf);
   uart_puts("\r\n");
 
+  uart_puts("BIN: ");
+  int_bstr(num, buf);
+  uart_puts(buf);
+  uart_puts("\r\n");
+
+  int_str(sizeof(num), buf);
+  uart_puts(buf);
+  uart_puts("\r\n");
+
+  uart_puts("\r\n");
+  uart_puts("\r\n");
 
   char buffer[100];
   unsigned int n = 0;
@@ -49,14 +73,14 @@ void kernel_main(uint32_t r0, uint32_t r1, uint32_t atags)
 
     uart_puts("You entered: ");
     uart_puts(buffer);
-    uart_puts("\r\n");
+    uart_puts("\n");
     uart_puts("A total of ");
     size_t len = strlen(buffer);
     int_str(len, buffer);
     strcat(buffer, " characters.");
     uart_puts(buffer);
 
-    uart_puts("\r\n");
-    uart_puts("\r\n");
+    uart_puts("\n");
+    uart_puts("\n");
   }
 }
