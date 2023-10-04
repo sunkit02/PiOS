@@ -49,7 +49,7 @@ build_sub_dirs:
 $(BUILD_DIR)/kernel.img: $(BUILD_DIR)/kernel.elf
 	$(ARMGNU)-objcopy $< -O binary $@
 
-$(BUILD_DIR)/kernel.elf: linker.ld
+$(BUILD_DIR)/kernel.elf: linker.ld $(BUILD_DIR)/*.o
 	$(ARMGNU)-gcc -T $< -o $@ $(LINK_FLAGS) $(BUILD_DIR)/*.o -lgcc 
 
 .PHONY: clean
