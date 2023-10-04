@@ -4,11 +4,14 @@
 #include "lib/format.h"
 #include "peripherals/uart.h"
 
-// The starting number of the numeric characters in ascii
-// Ex: 48 + 0 = '0'
-// Ex: 49 + 1 = '1'
-// Ex: 50 + 2 = '2'
-// Ex: 51 + 3 = '3'
+/**
+* The starting number of the numeric characters in ascii
+*
+* Ex: 48 + 0 = '0'
+* Ex: 49 + 1 = '1'
+* Ex: 50 + 2 = '2'
+* Ex: 51 + 3 = '3'
+*/
 #define ASCII_NUM_BASE 48
 
 // The number of bits in a byte
@@ -58,7 +61,7 @@ char *int_str(int num, char *buf) {
 
   unsigned int mask = 1 << 31; 
   int i = 0;
-  
+
   // Check two's complement first bit and converts negative to unsigned
   if (num & mask) {
     num ^= 0xffffffff;
@@ -110,13 +113,18 @@ char *int_bstr(int num, char *buf) {
     }
   }
 
+  // Overwrite trailing space with '\0'
+  if (buf[j - 1] == ' ') {
+    j--;
+  }
+
   buf[j] = '\0';
 
   return buf + j;
 }
 
-
-char *to_bstr(void *ptr, size_t n, char *buf, size_t bufSize) {
+// Generic binary dump
+char *to_bstr(void *ptr, size_t size, char *buf, size_t bufSize) {
   unsigned char *input = ptr;
 
   // Mask for each byte
@@ -124,16 +132,7 @@ char *to_bstr(void *ptr, size_t n, char *buf, size_t bufSize) {
 
   size_t charsWritten = 0;
 
-#if ENDIANNESS == 0
-uart_puts("Little endian\r\n");
-  for (int i = n - 1; i >= 0; i--) {
-#else
-  uart_puts("Big endian\r\n");
-  for (int i = 0; i < n; i++) {
-#endif
-
-    if (charsWritten + 1 >= bufSize) break;
-
+  for (int i = 0; i < size; i++) {
     mask = 1 << 7;
 
     for (int j = 0; j < BYTE_SIZE; j++) {
@@ -151,52 +150,123 @@ uart_puts("Little endian\r\n");
     }
   }
 
-  // Overwrite the last space with '\0'
-  buf[--charsWritten] = '\0';
+  // Overwrite trailing space with '\0'
+  if (buf[charsWritten - 1] == ' ') {
+    charsWritten--;
+  }
 
+  buf[charsWritten] = '\0';
+
+  return buf + charsWritten;
+
+}
+
+
+// Generic binary string dump endian aware
+char *to_bstr_end(void *ptr, size_t size, char *buf, size_t bufSize) {
+  unsigned char *input = ptr;
+
+  // Mask for each byte
+  unsigned char mask = 1 << 7; 
+
+  size_t charsWritten = 0;
+
+#if ENDIANNESS == 0
+  for (int i = size - 1; i >= 0; i--)
+#else
+  for (int i = 0; i < n; i++)
+#endif
+  {
+    mask = 1 << 7;
+
+    for (int j = 0; j < BYTE_SIZE; j++) {
+      if (charsWritten + 1 >= bufSize) break;
+
+      if ((input[i] & mask) > 0) {
+        buf[charsWritten++] = '1';
+      } else {
+        buf[charsWritten++] = '0';
+      }
+      mask >>= 1;
+      if (j % 4 == 3) {
+        buf[charsWritten++] = ' ';
+      }
+    }
+  }
+
+  // Overwrite trailing space with '\0'
+  if (buf[charsWritten - 1] == ' ') {
+    charsWritten--;
+  }
+
+  buf[charsWritten] = '\0';
+
+  return buf + charsWritten;
+}
+
+// Generic hex dump
+char *to_xstr(void *ptr, size_t size, char *buf, size_t bufSize) {
+  unsigned char *input = ptr;
+
+  unsigned char upperByte = 0;
+  unsigned char lowerByte = 0;
+
+  size_t charsWritten = 0;
+  for (size_t i = 0; i < size; i++) {
+    if (charsWritten + 1 >= bufSize) break;
+
+    // Acquire the upper and lower half of each byte
+    upperByte = (input[i] & 0xf0) >> 4;
+    lowerByte = input[i] & 0x0f;
+
+    buf[charsWritten++] = HEX_CHARS[upperByte];
+    buf[charsWritten++] = HEX_CHARS[lowerByte];
+    buf[charsWritten++] = ' ';
+  }
+
+  // Overwrite trailing space with '\0'
+  if (buf[charsWritten - 1] == ' ') {
+    charsWritten--;
+  }
+
+  buf[charsWritten] = '\0';
 
   return buf + charsWritten;
 }
 
 
-char *to_xstr(void *ptr, 
-              size_t elementSize,
-              size_t totalSize,
-              char *buf,
-              size_t bufSize) {
+// Endian aware hex dump (doesn't work well with nested arrays)
+char *to_xstr_end(void *ptr, size_t size, char *buf, size_t bufSize) {
   unsigned char *input = ptr;
-  
-  size_t elementNum = totalSize / elementSize; 
 
   unsigned char upperByte = 0;
   unsigned char lowerByte = 0;
 
   size_t charsWritten = 0;
 
-  for (int element = 0; element < elementNum; element++) {
 #if ENDIANNESS == 0
-    uart_puts("Little endian\r\n");
-    int elementEndByte = (element * elementSize) + elementSize - 1;
-    for (int i = elementEndByte; i >= (int) (element * elementSize); i--)
+  for (int i = size - 1; i >= 0; i--)
 #else
-    uart_puts("Big endian\r\n");
-    for (int i = (element * elementSize); i < (int) (element * elementSize) + elementSize; i++)
+  for (int i = 0; i < size; i++)
 #endif
-    {
-      if (charsWritten + 1 >= bufSize) break;
+  {
+    if (charsWritten + 1 >= bufSize) break;
 
-      // Acquire the upper and lower half of each byte
-      upperByte = (input[i] & 0xf0) >> 4;
-      lowerByte = input[i] & 0x0f;
+    // Acquire the upper and lower half of each byte
+    upperByte = (input[i] & 0xf0) >> 4;
+    lowerByte = input[i] & 0x0f;
 
-      buf[charsWritten++] = HEX_CHARS[upperByte];
-      buf[charsWritten++] = HEX_CHARS[lowerByte];
-      buf[charsWritten++] = ' ';
-    }
+    buf[charsWritten++] = HEX_CHARS[upperByte];
+    buf[charsWritten++] = HEX_CHARS[lowerByte];
+    buf[charsWritten++] = ' ';
   }
 
-  // Overwrite the last space with '\0'
-  buf[--charsWritten] = '\0';
+  // Overwrite trailing space with '\0'
+  if (buf[charsWritten - 1] == ' ') {
+    charsWritten--;
+  }
+
+  buf[charsWritten] = '\0';
 
   return buf + charsWritten;
 }

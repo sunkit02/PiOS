@@ -20,8 +20,12 @@ char *int_str(int num, char *buf);
 char *int_bstr(int num, char *buf); 
 
 
-char *to_bstr(void *ptr, size_t n, char *buf, size_t bufSize);
+char *to_bstr(void *ptr, size_t size, char *buf, size_t bufSize);
 
-char *to_xstr(void *ptr, size_t size, size_t n, char *buf, size_t bufSize);
+char *to_bstr_end(void *ptr, size_t size, char *buf, size_t bufSize);
+
+char *to_xstr(void *ptr, size_t size, char *buf, size_t bufSize);
+
+char *to_xstr_end(void *ptr, size_t size, char *buf, size_t bufSize);
 
 #endif // !LIB_PRINT_H

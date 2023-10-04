@@ -46,23 +46,30 @@ void kernel_main(uint32_t r0, uint32_t r1, uint32_t atags)
 
   int num = 0x11223345;
 
-  char msg[] = {"Hello, world!"};
+  // char msg[][3] = {"12", "34", "45"};
+  int msg[] = {0x1100dd, 0x2200ee, 0x3300ff};
   uart_puts("HEX: ");
   // to_xstr(&num, sizeof(num), sizeof(num), buf, 1024);
-  to_xstr(msg, sizeof(msg[0]), sizeof(msg), buf, 1024);
+  for (int i = 0; i < 3; i++) {
+    // to_xstr(&msg[i], sizeof(msg[i]), buf, sizeof(buf));
+    to_bstr(&msg[i], sizeof(msg[i]), buf, sizeof(buf));
+    uart_puts(buf);
+    uart_puts("\n");
+  }
+
+  uart_puts("sizeof(msg)=");
+  int_str(sizeof(msg), buf);
   uart_puts(buf);
-  uart_puts("\r\n");
+  uart_puts("\n");
+
 
   uart_puts("BIN: ");
-  int_bstr(num, buf);
+  to_bstr_end(msg, sizeof(msg), buf, sizeof(buf));
   uart_puts(buf);
   uart_puts("\r\n");
 
   int_str(sizeof(num), buf);
   uart_puts(buf);
-  uart_puts("\r\n");
-
-  uart_puts("\r\n");
   uart_puts("\r\n");
 
   char buffer[100];
