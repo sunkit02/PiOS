@@ -2,6 +2,8 @@
 
 #include "lib/print.h"
 #include "peripherals/uart.h"
+#include "lib/string.h"
+#include "include/peripherals/uart.h"
 
 // The starting number of the numeric characters in ascii
 // Ex: 48 + 0 = '0'
@@ -110,7 +112,9 @@ char *int_bstr(int num, char *buf) {
 // Use %% to print a %
 void printf(char *string, ...){ 
   
-   char finalString[10000];
+   char *finalString[10000];
+   char *pointerToFinalString[1000];
+   pointerToFinalString = finalString;
 
    // Loop till end of string
    while (*string != '\0'){
@@ -152,5 +156,5 @@ void printf(char *string, ...){
    // Clean up weird C variable argument list
    va_end(varible);
    // Print the thing
-
+   uart_outs(pointerToFinalString);
 }
