@@ -16,9 +16,9 @@ void kernel_main(uint32_t r0, uint32_t r1, uint32_t atags)
 {
 	// initialize UART for Raspi2
 	uart_init(1);
-	uart_puts("Hello, this is PiOS!\r\n");
-  uart_puts("\r\n");
-  uart_puts("\r\n");
+	uart_puts("Hello, this is PiOS!\n");
+  uart_puts("\n");
+  uart_puts("\n");
 
   char buf[1024];
   char *strEnd = NULL;
@@ -66,11 +66,11 @@ void kernel_main(uint32_t r0, uint32_t r1, uint32_t atags)
   uart_puts("BIN: ");
   to_bstr_end(msg, sizeof(msg), buf, sizeof(buf));
   uart_puts(buf);
-  uart_puts("\r\n");
+  uart_puts("\n");
 
   int_str(sizeof(num), buf, sizeof(buf));
   uart_puts(buf);
-  uart_puts("\r\n");
+  uart_puts("\n");
 
   char buffer[100];
   unsigned int n = 0;
