@@ -106,50 +106,51 @@ char *int_bstr(int num, char *buf) {
 }
 
 
-// Only can do one variable at a time
-// Can be string or int
+// Can only be string or int
+// Use %% to print a %
 void printf(char *string, ...){ 
-    va_list variable;
-    size_t counter = 0;
-
-   char finalString[];
+  
+   char finalString[10000];
 
    // Loop till end of string
    while (*string != '\0'){
+       *finalString = *string;
         
-        //check for escape charecter
-        if (*string == '%') {
-            string++;
-            {
+       //check for escape charecter
+       if (*string == '%') {
+           va_list variable;
+           va_start(variable, string);
+           string++;
+           
+           switch (*string) {
+               case 'd': {
+                   int intPassed = va_start(variable, int);
+                   int_bstr(intPassed, finalString);
+                   break;
+                }
+               case 's': {
+                   char* stringPassed = va_start(variable, char*);
+                   strcat(finalString, stringPassed);
+                   while (*finalString != '\0'){
+                       finalString++;
+                   }
+                   break;
+                }
+                case '%': {
+                    finalString++;
+                    *finalString = '%';
+                    break;
+                }
+           }
+       }
 
-            switch (string) {
-
-
-
-
-            }
-            if (*string == 'd') {
-                // Convert decimal to string
-                string--;
-                char* stringVarible = int_bstr(variable);
-
-                //cat first half of string with string deimcal
-                strcat(currentString, stringVarible);
-                //cat the second half of the finalized string
-                strcat(currentString, string);
-
-            }
-            else if (*string == 's') {
-                //cat first half of string with string
-                strcat(currentString, stringVarible);
-                //cat the second half of the finalized string
-                strcat(currentString, string);
-
-            }
-        }
-        else {
-            finalString[counter] = *string;
-        }
-   counter++;
+       finalString++;
+       string++;
    }
+   // Add new line chareter and terminating charecter
+   strcat(finalString, '\n\0');
+   // Clean up weird C variable argument list
+   va_end(varible);
+   // Print the thing
+
 }
