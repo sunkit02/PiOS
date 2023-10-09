@@ -80,7 +80,7 @@ char *int_str(int num, char *buf, size_t bufSize) {
 
   // Check two's complement first bit and converts negative to unsigned
   if (num & mask) {
-    num ^= 0xffffffff;
+    num = ~num;
     num += 1;
     // Insert negative sign
     buf[i++] = '-';
