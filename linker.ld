@@ -7,6 +7,11 @@ ENTRY(_start)
  
 SECTIONS
 {
+    .interrupt_vectors :
+    {
+      KEEP(*(.interrupt_vectors))
+      *(.interrupt_vectors)
+    } > VECTOR_TABLE
     /* Starts at LOADER_ADDR. */
     . = 0x8000;
     /* For AArch64, use . = 0x80000; */
@@ -46,4 +51,9 @@ SECTIONS
     __bss_end = .;
     __bss_size = __bss_end - __bss_start;
     __end = .;
+}
+
+MEMORY
+{
+  VECTOR_TABLE : ORIGIN = 0x000, LENGTH = 0x128
 }
