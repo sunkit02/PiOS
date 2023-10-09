@@ -1,7 +1,6 @@
-
 #include <stdint.h>
 #include <stddef.h>
-#include "lib/print.h"
+#include "lib/format.h"
 #include "peripherals/bcm2835-gpio.h"
 #include "peripherals/mmio.h"
 
