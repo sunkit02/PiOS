@@ -86,7 +86,7 @@ void kernel_main(uint32_t r0, uint32_t r1, uint32_t atags)
 
   
 
-  uintptr_t address = 0x20000000;
+  uintptr_t address = 0x20000000 - 100;
   volatile uint32_t *ptr = (volatile uint32_t *)address;
   to_xstr((void *)ptr, sizeof(ptr), buf, sizeof(buf));
   uart_puts("\nPRINTING MEMORY ADDRESS ");
