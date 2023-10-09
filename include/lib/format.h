@@ -19,6 +19,10 @@ char *int_str(int num, char *buf, size_t bufSize);
 // Note: buf must of of size 37 or greater
 char *int_bstr(int num, char *buf, size_t bufSize); 
 
+void debug_printf();
+// Prints a string but you can also put arguments in
+void printf(char *string, ...);
+
 
 char *to_bstr(void *ptr, size_t size, char *buf, size_t bufSize);
 

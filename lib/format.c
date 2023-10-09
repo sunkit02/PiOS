@@ -1,5 +1,6 @@
 #include <stdbool.h>
 #include <stddef.h>
+#include <stdarg.h>
 
 #include "lib/format.h"
 #include "peripherals/uart.h"
@@ -257,4 +258,53 @@ char *to_xstr_end(void *ptr, size_t size, char *buf, size_t bufSize) {
   buf[charsWritten] = '\0';
 
   return buf + charsWritten;
+}
+
+void printf(char *fmtStr, ...) { 
+  char output[10000];
+  char *outputPtr = output;
+  
+  va_list ap;
+  va_start(ap, fmtStr);
+
+  // Loop till end of string
+  while (*fmtStr != '\0'){
+    //check for escape charecter
+    if (*fmtStr == '%') {
+      fmtStr++;
+
+      switch (*fmtStr) {
+        case 'd': {
+          int intPassed = va_arg(ap, int);
+          int_str(intPassed, outputPtr, sizeof(output) - (size_t) outputPtr);
+          outputPtr++;
+          break;
+        }
+        case 's': {
+          char *stringPassed = va_arg(ap, char*);
+          while (*stringPassed != '\0') {
+            *outputPtr++ = *stringPassed++;
+          }
+          break;
+        }
+        case '%': {
+          *outputPtr++ = '%';
+          break;
+        }
+        default: {
+          *outputPtr++ = *fmtStr;
+        }
+      }
+    } else {
+      *outputPtr++ = *fmtStr;
+    }
+
+    fmtStr++;
+  }
+  // Add terminating charecter
+  *outputPtr = '\0';
+  // Clean up weird C variable argument list
+  va_end(ap);
+  // Print the thing
+  uart_puts(output);
 }

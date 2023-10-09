@@ -16,58 +16,25 @@ void kernel_main(uint32_t r0, uint32_t r1, uint32_t atags)
 {
 	// initialize UART for Raspi2
 	uart_init(1);
-	uart_puts("Hello, this is PiOS!\n");
-  uart_puts("\n");
-  uart_puts("\n");
+	printf("\n\n\nHello, this is PiOS!\n\n\n");
 
-  char buf[1024];
+  char buf[1024] = { 0 };
   char *strEnd = NULL;
   
-  uart_puts("CPSR: ");
-  strEnd = int_bstr(get_cpsr(), buf, sizeof(buf)) + 1;
-  uart_puts(buf);
-  uart_puts("\n");
+  int_bstr(get_cpsr(), buf, sizeof(buf));
+  printf("CPSR: %s\n", buf);
 
-  uart_puts("SPSR: ");
-  strEnd = int_bstr(get_spsr(), buf, sizeof(buf)) + 1;
-  uart_puts(buf);
-  uart_puts("\n");
+
+  int_bstr(get_spsr(), buf, sizeof(buf));
+  printf("SPSR: %s\n", buf);
 
   save_cpsr();
 
-  uart_puts("SPSR AFTER SAVE: ");
-  strEnd = int_bstr(get_spsr(), buf, sizeof(buf)) + 1;
-  uart_puts(buf);
-  uart_puts("\n");
+  int_bstr(get_spsr(), buf, sizeof(buf));
+  printf("SPSR AFTER SAVE: %s\n", buf);
 
+  printf("\n\n");
 
-  uart_puts("\n");
-  uart_puts("\n");
-
-  int num = 0x11223345;
-
-  // char msg[][3] = {"12", "34", "45"};
-  int msg[] = {0x1100dd, 0x2200ee, 0x3300ff};
-  uart_puts("HEX: ");
-  // to_xstr(&num, sizeof(num), sizeof(num), buf, 1024);
-  for (int i = 0; i < 3; i++) {
-    // to_xstr(&msg[i], sizeof(msg[i]), buf, sizeof(buf));
-    int_bstr(msg[i], buf, sizeof(buf));
-    uart_puts(buf);
-    uart_puts("\n");
-  }
-
-  to_xstr(msg, sizeof(msg), buf, sizeof(buf));
-
-  uart_puts("sizeof(msg)=");
-  int_str(sizeof(msg), buf, sizeof(buf));
-  uart_puts(buf);
-  uart_puts("\n");
-
-
-  uart_puts("BIN: ");
-  to_bstr_end(msg, sizeof(msg), buf, sizeof(buf));
-  uart_puts(buf);
   uart_puts("\n");
 
   // uart_puts("MMU ENABLED: ");
@@ -101,22 +68,14 @@ void kernel_main(uint32_t r0, uint32_t r1, uint32_t atags)
   // uart_puts("Invoking reset handler...\n");
   // invoke_reset_handler();
 
-  char buffer[100];
   unsigned int n = 0;
 	while (1) {
-    uart_puts("Type something: ");
-    uart_readline(buffer, 100);
+    printf("Type something: ");
+    uart_readline(buf, 100);
 
-    uart_puts("You entered: ");
-    uart_puts(buffer);
-    uart_puts("\n");
-    uart_puts("A total of ");
-    size_t len = strlen(buffer);
-    int_str(len, buffer, sizeof(buffer));
-    strcat(buffer, " characters.");
-    uart_puts(buffer);
+    size_t len = strlen(buf);
 
-    uart_puts("\n");
-    uart_puts("\n");
+    printf("You entered: %s\n", buf);
+    printf("A total of %d characters.\n\n", len);
   }
 }

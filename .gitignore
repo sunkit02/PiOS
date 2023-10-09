@@ -2,3 +2,6 @@ build/
 
 # Clangd configuration
 .clangd
+FileContentIndex/
+v17/
+.vs/
