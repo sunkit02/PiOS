@@ -26,6 +26,9 @@
 // as a string (including '\0')
 #define CHARS_FOR_INT 40
 
+// Size of output buffer for printf on the stack
+#define PRINTF_BUFFER_SIZE 10000
+
 static const char HEX_CHARS[16] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
 // Prints numeric value of a character
@@ -260,15 +263,19 @@ char *to_xstr_end(void *ptr, size_t size, char *buf, size_t bufSize) {
   return buf + charsWritten;
 }
 
+// Behaves like the C standard library printf function
+// Note: Does have a limit of 10000 characters due to not having a heap
+// FIXME: undertermined behavior occurs when PRINTF_BUFFER_SIZE is less than ~100
 void printf(char *fmtStr, ...) { 
-  char output[10000];
+  char output[PRINTF_BUFFER_SIZE];
   char *outputPtr = output;
+  char *outputEndPtr = outputPtr + PRINTF_BUFFER_SIZE - 1;
   
   va_list ap;
   va_start(ap, fmtStr);
 
-  // Loop till end of string
-  while (*fmtStr != '\0'){
+  // Loop till end of fmtStr or end of output buffer - 1 (leave space for '\0')
+  while (*fmtStr != '\0' && outputPtr < outputEndPtr) {
     //check for escape charecter
     if (*fmtStr == '%') {
       fmtStr++;
@@ -276,8 +283,7 @@ void printf(char *fmtStr, ...) {
       switch (*fmtStr) {
         case 'd': {
           int intPassed = va_arg(ap, int);
-          int_str(intPassed, outputPtr, sizeof(output) - (size_t) outputPtr);
-          outputPtr++;
+          outputPtr = int_str(intPassed, outputPtr, ((size_t) output + sizeof(output)) - (size_t) outputPtr);
           break;
         }
         case 's': {
