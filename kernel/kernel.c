@@ -36,7 +36,37 @@ void kernel_main(uint32_t r0, uint32_t r1, uint32_t atags)
   printf("\n\n");
 
   uart_puts("\n");
-  uart_puts("\n");
+
+  // uart_puts("MMU ENABLED: ");
+  // int_str(mmu_enabled(), buf, sizeof(buf));
+  // uart_puts(buf);
+  // uart_puts("\n");
+  //
+  // uart_puts("Enabling MMU...");
+  // enable_mmu();
+  // uart_puts("Finished enabling MMU...");
+  //
+  // uart_puts("MMU ENABLED: ");
+  // int_str(mmu_enabled(), buf, sizeof(buf));
+  // uart_puts(buf);
+  // uart_puts("\n");
+
+  
+
+  uintptr_t address = 0x20000000 - 100;
+  volatile uint32_t *ptr = (volatile uint32_t *)address;
+  to_xstr((void *)ptr, sizeof(ptr), buf, sizeof(buf));
+  uart_puts("\nPRINTING MEMORY ADDRESS ");
+  uart_puts(buf);
+  uart_puts(":\n");
+
+
+  to_xstr((void *)ptr, 100, buf, sizeof(buf));
+  uart_puts(buf);
+  uart_puts("\nFINISHED PRINTING MEMORY ADDRESS\n");
+
+  // uart_puts("Invoking reset handler...\n");
+  // invoke_reset_handler();
 
   unsigned int n = 0;
 	while (1) {
