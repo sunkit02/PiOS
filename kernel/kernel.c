@@ -3,7 +3,7 @@
 
 #include "mm/psr.h"
 #include "peripherals/uart.h"
-#include "lib/print.h"
+#include "lib/format.h"
 #include "lib/string.h"
  
 #ifdef AARCH64
@@ -16,47 +16,66 @@ void kernel_main(uint32_t r0, uint32_t r1, uint32_t atags)
 {
 	// initialize UART for Raspi2
 	uart_init(1);
-	uart_puts("Hello, this is PiOS!\r\n");
-  uart_puts("\r\n");
-  uart_puts("\r\n");
+	printf("\n\n\nHello, this is PiOS!\n\n\n");
 
-  char buf[40] = { 0 };
+  char buf[1024] = { 0 };
   char *strEnd = NULL;
   
-  uart_puts("CPSR: ");
-  strEnd = int_bstr(get_cpsr(), buf) + 1;
-  uart_puts(buf);
-  uart_puts("\r\n");
+  int_bstr(get_cpsr(), buf, sizeof(buf));
+  printf("CPSR: %s\n", buf);
 
-  uart_puts("SPSR: ");
-  strEnd = int_bstr(get_spsr(), buf) + 1;
-  uart_puts(buf);
-  uart_puts("\r\n");
+
+  int_bstr(get_spsr(), buf, sizeof(buf));
+  printf("SPSR: %s\n", buf);
 
   save_cpsr();
 
-  uart_puts("SPSR AFTER SAVE: ");
-  strEnd = int_bstr(get_spsr(), buf) + 1;
+  int_bstr(get_spsr(), buf, sizeof(buf));
+  printf("SPSR AFTER SAVE: %s\n", buf);
+
+  printf("\n\n");
+
+  uart_puts("\n");
+
+  // uart_puts("MMU ENABLED: ");
+  // int_str(mmu_enabled(), buf, sizeof(buf));
+  // uart_puts(buf);
+  // uart_puts("\n");
+  //
+  // uart_puts("Enabling MMU...");
+  // enable_mmu();
+  // uart_puts("Finished enabling MMU...");
+  //
+  // uart_puts("MMU ENABLED: ");
+  // int_str(mmu_enabled(), buf, sizeof(buf));
+  // uart_puts(buf);
+  // uart_puts("\n");
+
+  
+
+  uintptr_t address = 0x20000000 - 100;
+  volatile uint32_t *ptr = (volatile uint32_t *)address;
+  to_xstr((void *)ptr, sizeof(ptr), buf, sizeof(buf));
+  uart_puts("\nPRINTING MEMORY ADDRESS ");
   uart_puts(buf);
-  uart_puts("\r\n");
+  uart_puts(":\n");
 
 
-  char buffer[100];
+  to_xstr((void *)ptr, 100, buf, sizeof(buf));
+  uart_puts(buf);
+  uart_puts("\nFINISHED PRINTING MEMORY ADDRESS\n");
+
+  // uart_puts("Invoking reset handler...\n");
+  // invoke_reset_handler();
+
   unsigned int n = 0;
 	while (1) {
-    uart_puts("Type something: ");
-    uart_readline(buffer, 100);
+    printf("Type something: ");
+    uart_readline(buf, 100);
 
-    uart_puts("You entered: ");
-    uart_puts(buffer);
-    uart_puts("\r\n");
-    uart_puts("A total of ");
-    size_t len = strlen(buffer);
-    int_str(len, buffer);
-    strcat(buffer, " characters.");
-    uart_puts(buffer);
+    size_t len = strlen(buf);
 
-    uart_puts("\r\n");
-    uart_puts("\r\n");
+    printf("You entered: %s\n", buf);
+    printf("A total of %d characters.\n\n", len);
   }
 }
