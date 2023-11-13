@@ -14,7 +14,7 @@ BUILD_DIR = build
 export BUILD_DIR := $(shell pwd)/$(BUILD_DIR)
 
 # Flags for QEMU to run
-EMULATOR_FLAGS = -M raspi1ap -serial stdio -kernel
+EMULATOR_FLAGS = -M raspi1ap -nographic -kernel
 
 
 .PHONY: all
