@@ -81,3 +81,39 @@ int strcmp(const char *str1, const char *str2) {
   }
   return 1;
 }
+
+char *strpbrk(const char *str1, const char *str2) {
+  while (*str1 != '\0') {
+    const char *temp = str2;
+    while (*temp != '\0') {
+      if (*str1 == *temp) {
+        return (char *)str1;
+      }
+      temp++;
+    }
+    str1++;
+  }
+  return NULL;
+}
+
+int strcoll(const char *str1, const char *str2) {
+  while (*str1 != '\0' && *str2 != '\0') {
+    if (*str1 != *str2) {  
+      return (int)(*str1) - (int)(*str2);
+    }
+    str1++;
+    str2++;
+  }
+  return (int)(*str1) - (int)(*str2);
+}
+
+size_t strxfrm(char *dest, const char *src, size_t n) {
+  size_t i = 0;
+
+  while (i < n - 1 && src[i] != '\0') {
+    dest[i] = src[i];
+    i++;
+  }
+  dest[i] = '\0';
+  return i;
+}

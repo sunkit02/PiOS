@@ -13,5 +13,7 @@ void *memcpy(void *dest, const void *src, size_t n);
 void *memcat(void *dest, const void *src1, const void *src2, size_t src1N, size_t src2N);
 void *memset(void *str, int c, size_t n);
 int strcmp(const char *str1, const char *str2);
+char *strpbrk(const char *str1, const char *str2);
+int strcoll(const char *str1, const char *str2);
 
 #endif // !LIB_STRING_H
