@@ -1,10 +1,9 @@
 #include <stdbool.h>
-#include <stdarg.h>
 
 #include "lib/print.h"
 #include "peripherals/uart.h"
 #include "lib/string.h"
-#include "peripherals/uart.h"
+#include "include/peripherals/uart.h"
 
 // The starting number of the numeric characters in ascii
 // Ex: 48 + 0 = '0'
@@ -51,7 +50,7 @@ char *int_str(int num, char *buf) {
 
   unsigned int mask = 1 << 31; 
   int i = 0;
-
+  
   // Check two's complement first bit and converts negative to unsigned
   if (num & mask) {
     num ^= 0xffffffff;
@@ -111,50 +110,51 @@ char *int_bstr(int num, char *buf) {
 
 // Can only be string or int
 // Use %% to print a %
-void printf(char *fmtStr, ...){ 
-  char output[10000];
-  char *outputPtr = output;
+void printf(char *string, ...){ 
   
-  va_list ap;
-  va_start(ap, fmtStr);
+   char *finalString[10000];
+   char *pointerToFinalString[1000];
+   pointerToFinalString = finalString;
 
-  // Loop till end of string
-  while (*fmtStr != '\0'){
-    //check for escape charecter
-    if (*fmtStr == '%') {
-      fmtStr++;
+   // Loop till end of string
+   while (*string != '\0'){
+       *finalString = *string;
+        
+       //check for escape charecter
+       if (*string == '%') {
+           va_list variable;
+           va_start(variable, string);
+           string++;
+           
+           switch (*string) {
+               case 'd': {
+                   int intPassed = va_start(variable, int);
+                   int_bstr(intPassed, finalString);
+                   break;
+                }
+               case 's': {
+                   char* stringPassed = va_start(variable, char*);
+                   strcat(finalString, stringPassed);
+                   while (*finalString != '\0'){
+                       finalString++;
+                   }
+                   break;
+                }
+                case '%': {
+                    finalString++;
+                    *finalString = '%';
+                    break;
+                }
+           }
+       }
 
-      switch (*fmtStr) {
-        case 'd': {
-          int intPassed = va_arg(ap, int);
-          int_str(intPassed, outputPtr++);
-          break;
-        }
-        case 's': {
-          char *stringPassed = va_arg(ap, char*);
-          while (*stringPassed != '\0') {
-            *outputPtr++ = *stringPassed++;
-          }
-          break;
-        }
-        case '%': {
-          *outputPtr++ = '%';
-          break;
-        }
-        default: {
-          *outputPtr++ = *fmtStr;
-        }
-      }
-    } else {
-      *outputPtr++ = *fmtStr;
-    }
-
-    fmtStr++;
-  }
-  // Add terminating charecter
-  *outputPtr = '\0';
-  // Clean up weird C variable argument list
-  va_end(ap);
-  // Print the thing
-  uart_puts(output);
+       finalString++;
+       string++;
+   }
+   // Add new line chareter and terminating charecter
+   strcat(finalString, '\n\0');
+   // Clean up weird C variable argument list
+   va_end(varible);
+   // Print the thing
+   uart_outs(pointerToFinalString);
 }
